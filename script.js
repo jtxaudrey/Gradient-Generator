@@ -328,7 +328,6 @@ resetPaletteSlidersBtn.addEventListener("click", () => {
   });
 });
 
-
 // ========== Toggle Panel Button ==========
 const toggleBtn = document.getElementById("togglePanelBtn");
 const panelContainer = document.getElementById("panelContainer");

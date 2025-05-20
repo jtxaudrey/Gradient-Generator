@@ -90,9 +90,9 @@ body.panels-hidden #togglePanelContainer:not(:hover) #togglePanelBtn {
   max-height: calc(100vh - 100px);
   overflow-y: auto;
   z-index: 90;
-  font-weight: 320;
-  
+  font-weight: 320; 
 }
+
 #panelContainer.hidden {
   display: none;
 }
