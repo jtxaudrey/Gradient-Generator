@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gradient Generator</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');  </style>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</head>
+<body>
+  <!-- Canvas and Glass Overlay -->
+  <canvas id="gradientCanvas"></canvas>
+  <div id="glassEffect"></div>
+
+  <!-- Toggle Panel Button -->
+  <div id="togglePanelContainer">
+    <button id="togglePanelBtn">☰ Hide Controls</button>
+  </div>
+
+  <!-- Side Panel Container (visible on load) -->
+  <div id="panelContainer">
+    <!-- Palette Panel -->
+    <div id="palettePanel" class="mini-panel">
+      <h3>Palette</h3>
+      <ul id="colorPaletteList"></ul>
+      <button id="changeColorButton">Generate New Palette</button>
+      <button id="tweakColorButton">Hue Adjust</button>
+      <button id="lightDarkButton">Light/Dark Mode Toggle</button>
+    </div>
+
+    <!-- Sliders Panel -->
+    <div id="slidersPanel" class="mini-panel">
+      <h3>Sliders</h3>
+      <div class="sliderGroup">
+        <label for="blurSlider">Blur Strength</label>
+        <input type="range" id="blurSlider" min="0" max="100" value="90" />
+      </div>
+      <div class="sliderGroup">
+        <label for="radiusSlider">Circle Radius</label>
+        <input type="range" id="radiusSlider" min="10" max="200" value="100" />
+      </div>
+      <div class="sliderGroup">
+        <label for="shadowSlider">Shadow Blur</label>
+        <input type="range" id="shadowSlider" min="0" max="50" value="10" />
+      </div>
+      <div class="sliderGroup">
+        <label for="smoothnessSlider">Movement Smoothness</label>
+        <input type="range" id="smoothnessSlider" min="1" max="20" value="7" />
+      </div>
+      <div class="sliderGroup">
+        <label for="speedSlider">Circle Speed</label>
+        <input type="range" id="speedSlider" min="0.1" max="5" step="0.1" value="1.5" />
+      </div>
+      <div class="sliderGroup">
+        <label for="circleCountSlider">Circles: <span id="circleCountValue">120</span></label>
+        <input type="range" id="circleCountSlider" min="10" max="200" value="120" />
+      </div>
+      <button id="resetDefaultsBtn">Reset Sliders</button>
+    </div>
+  </div>
+
+  <!-- Main Script -->
+  <script src="script.js"></script>
+</body>
+</html>

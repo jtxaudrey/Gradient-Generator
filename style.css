@@ -1,0 +1,275 @@
+/* ===== Reset & Base ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Jost", sans-serif;
+  color: #ffffff;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background-color: black;
+}
+
+/* ===== Canvas ===== */
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  display: block;
+  z-index: 0;
+}
+
+/* ===== Glass Blur Overlay ===== */
+#glassEffect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(90px);
+  pointer-events: none;
+  z-index: 1;
+  cursor: none !important;
+}
+
+/* ===== Toggle Panel Button (Top Left) ===== */
+#togglePanelContainer {
+  position: fixed;
+  top: 20px;
+  left: 30px;
+  z-index: 95;
+  width: 240px;
+  height: 60px; /* hover zone */
+}
+
+#togglePanelBtn {
+  width: 100%;
+   background: rgba(9, 0, 77, 0.22);
+  color: #111;
+  border: none;
+  padding: 10px 16px;
+  font-size: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.3s ease, background-color 0.2s ease;
+  opacity: 1;
+  color: #ffffff;
+}
+
+/* Fade out ONLY if panels are hidden and mouse is not hovering */
+body.panels-hidden #togglePanelContainer:not(:hover) #togglePanelBtn {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#togglePanelContainer:hover #togglePanelBtn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#togglePanelBtn:hover {
+  background-color: #dcff67;
+  color: black;
+}
+
+/* ===== Side Panel Container ===== */
+#panelContainer {
+  position: fixed;
+  top: 80px;
+  left: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  z-index: 90;
+  font-weight: 320;
+}
+#panelContainer.hidden {
+  display: none;
+}
+
+/* ===== Individual Mini Panels ===== */
+.mini-panel {
+  background: rgba(9, 0, 77, 0.22);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  padding: 14px 16px;
+  width: 240px;
+  color: #111;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+/* ===== Color Palette List ===== */
+#colorPaletteList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+#colorPaletteList li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 10px;
+}
+.colorInput {
+  width: 60%;
+  border: none;
+  background: none;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+/* ===== Sliders ===== */
+.sliderGroup {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+.sliderGroup label {
+  margin-bottom: 4px;
+}
+.sliderGroup input[type="range"] {
+  width: 100%;
+}
+
+/* ===== Custom Range Slider Color ===== */
+input[type="range"] {
+  -webkit-appearance: none;
+  height: 6px;
+  background: transparent;
+}
+
+/* Track */
+input[type="range"]::-webkit-slider-runnable-track {
+  background: #060505;
+  height: 6px;
+  border-radius: 3px;
+}
+
+input[type="range"]::-moz-range-track {
+  background: #ccc;
+  height: 6px;
+  border-radius: 3px;
+}
+
+/* Thumb (the draggable circle) */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #dcff67;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: none;
+  margin-top: -5px; /* align thumb vertically */
+}
+
+input[type="range"]::-moz-range-thumb {
+  background-color: #dcff67;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: none;
+}
+
+/* Filled track on the left side (Chrome/Safari) */
+input[type="range"]::-webkit-slider-runnable-track {
+  background: linear-gradient(to right, #dcff67 var(--value, 50%), #ccc var(--value, 50%));
+}
+
+/* Firefox filled track */
+input[type="range"]::-moz-range-progress {
+  background-color: #dcff67;
+  height: 6px;
+  border-radius: 3px;
+}
+
+
+/* ===== Buttons in Panels ===== */
+.mini-panel button {
+  background-color: #212121;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+.mini-panel button:hover {
+  background-color: #dcff67;
+  color: black;
+}
+
+/* ===== Light/Dark Button Appearance Based on Mode ===== */
+#lightDarkButton {
+  background-color: #dcff67;
+  color: black;
+}
+
+#lightDarkButton:hover {
+  filter: brightness(1.1);
+}
+
+body.gradient-dark-mode #lightDarkButton {
+  background-color: #111;
+  color: white;
+}
+
+/* ===== Scrollbar Styling ===== */
+#panelContainer::-webkit-scrollbar {
+  width: 6px;
+}
+#panelContainer::-webkit-scrollbar-thumb {
+  background: #dcff67;
+  border-radius: 4px;
+}
+
+/* ===== Mobile Responsive ===== */
+@media (max-width: 600px) {
+  #togglePanelContainer {
+    width: 90vw;
+    left: 10px;
+  }
+
+  #panelContainer {
+    left: 10px;
+    width: 90vw;
+  }
+
+  .mini-panel {
+    width: 100%;
+  }
+}
+/* 1. Hide cursor globally */
+body,
+canvas,
+#glassEffect {
+  cursor: none !important;
+}
+
+/* 2. Show cursor (arrow) ONLY over UI */
+#togglePanelContainer,
+#togglePanelContainer *,
+#panelContainer,
+#panelContainer *,
+.mini-panel,
+.mini-panel *,
+button,
+input,
+label {
+  cursor: default !important;
+}
