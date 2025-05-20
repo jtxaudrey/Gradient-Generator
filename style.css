@@ -45,7 +45,7 @@ canvas {
   top: 20px;
   left: 30px;
   z-index: 95;
-  width: 240px;
+  width: 260px;
   height: 60px; /* hover zone */
 }
 
@@ -91,6 +91,7 @@ body.panels-hidden #togglePanelContainer:not(:hover) #togglePanelBtn {
   overflow-y: auto;
   z-index: 90;
   font-weight: 320;
+  
 }
 #panelContainer.hidden {
   display: none;
@@ -102,13 +103,14 @@ body.panels-hidden #togglePanelContainer:not(:hover) #togglePanelBtn {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
   padding: 14px 16px;
-  width: 240px;
+  width: 260px;
   color: #111;
   display: flex;
   flex-direction: column;
   gap: 10px;
+   overflow: visible;
 }
 
 
@@ -201,7 +203,7 @@ input[type="range"]::-moz-range-progress {
 
 /* ===== Buttons in Panels ===== */
 .mini-panel button {
-  background-color: #212121;
+  background-color: #2c28ff5b;
   color: white;
   border: none;
   padding: 8px 12px;
@@ -210,14 +212,14 @@ input[type="range"]::-moz-range-progress {
   transition: background-color 0.2s ease;
 }
 .mini-panel button:hover {
-  background-color: #dcff67;
-  color: black;
+  background-color: #e3ff87;
+  color:  #2c28ff5b;
 }
 
 /* ===== Light/Dark Button Appearance Based on Mode ===== */
 #lightDarkButton {
   background-color: #dcff67;
-  color: black;
+  color: #2c28ff5b;
 }
 
 #lightDarkButton:hover {
@@ -254,6 +256,36 @@ body.gradient-dark-mode #lightDarkButton {
     width: 100%;
   }
 }
+/* ===== Panel Header ===== */
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: none;
+}
+
+/* ===== Collapse Button ===== */
+.collapseBtn {
+  background: none;
+  border: none;
+  font-size: 10px;
+  color: #fff;
+  cursor: pointer;
+  padding: 0 6px;
+  background-color: none;
+}
+
+/* ===== Collapsed Panel Styles ===== */
+.mini-panel.collapsed > *:not(.panelHeader) {
+  display: none;
+    background-color: none;
+}
+
+.mini-panel.collapsed {
+  padding-bottom: 10px;
+    background-color: none;
+}
+
 /* === CURSOR VISIBILITY CONTROL === */
 
 /* 1. Hide the cursor globally */

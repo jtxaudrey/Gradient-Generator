@@ -23,19 +23,47 @@
   <div id="panelContainer">
     <!-- Palette Panel -->
     <div id="palettePanel" class="mini-panel">
-      <h3>Palette</h3>
+    <div class="panelHeader">
+     <h3>Palette</h3>
+     <button class="collapseBtn">−</button>
+    </div>
       <ul id="colorPaletteList"></ul>
       <button id="changeColorButton">Generate New Palette</button>
-      <button id="tweakColorButton">Hue Adjust</button>
-      <button id="lightDarkButton">Light/Dark Mode Toggle</button>
     </div>
+<!-- Colour Adjustments Panel -->
+<div id="colorAdjustmentsPanel" class="mini-panel">
+<div class="panelHeader">
+  <h3>Colour Adjustments</h3>
+  <button class="collapseBtn">−</button>
+</div>
+
+  <div class="sliderGroup">
+  <label for="hueSlider">Adjust Hue</label>
+  <input type="range" id="hueSlider" min="-180" max="180" value="0" />
+</div>
+
+  <div class="sliderGroup">
+    <label for="brightnessSlider">Lighten/Darken Palette</label>
+    <input type="range" id="brightnessSlider" min="-50" max="50" value="0" />
+  </div>
+
+  <div class="sliderGroup">
+    <label for="saturationSlider">Saturate/Desaturate Palette</label>
+    <input type="range" id="saturationSlider" min="-100" max="100" value="0" />
+  </div>
+
+  <button id="resetPaletteSlidersBtn">Reset Adjustments</button>
+</div>
 
     <!-- Sliders Panel -->
     <div id="slidersPanel" class="mini-panel">
-      <h3>Sliders</h3>
+<div class="panelHeader">
+  <h3>Style Sliders</h3>
+  <button class="collapseBtn">−</button>
+</div>
       <div class="sliderGroup">
         <label for="blurSlider">Blur Strength</label>
-        <input type="range" id="blurSlider" min="0" max="100" value="90" />
+        <input type="range" id="blurSlider" min="0" max="200" value="90" />
       </div>
       <div class="sliderGroup">
         <label for="radiusSlider">Circle Radius</label>

@@ -194,69 +194,140 @@ document.getElementById("changeColorButton").addEventListener("click", () => {
   updateColorUI();
 });
 
-document.getElementById("tweakColorButton").addEventListener("click", () => {
-  function hexToHSL(hex) {
-    const { r, g, b } = hexToRgb(hex);
-    const rP = r / 255, gP = g / 255, bP = b / 255;
-    const max = Math.max(rP, gP, bP), min = Math.min(rP, gP, bP);
-    let h, s, l = (max + min) / 2;
+// ========== Reset Visual Sliders ==========
+document.getElementById("resetDefaultsBtn").addEventListener("click", () => {
+  blurAmount = defaultSettings.blur;
+  circleRadius = defaultSettings.radius;
+  shadowBlur = defaultSettings.shadow;
+  smoothnessFactor = defaultSettings.smoothness;
+  speedFactor = defaultSettings.speed;
+  numPoints = defaultSettings.count;
 
-    if (max === min) {
-      h = s = 0;
-    } else {
-      const d = max - min;
-      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-      switch (max) {
-        case rP: h = (gP - bP) / d + (gP < bP ? 6 : 0); break;
-        case gP: h = (bP - rP) / d + 2; break;
-        case bP: h = (rP - gP) / d + 4; break;
-      }
-      h *= 60;
+  // Reset sliders
+  blurSlider.value = blurAmount;
+  radiusSlider.value = circleRadius;
+  shadowSlider.value = shadowBlur;
+  smoothnessSlider.value = smoothnessFactor;
+  speedSlider.value = speedFactor;
+  circleCountSlider.value = numPoints;
+  circleCountValue.textContent = numPoints;
+
+  // Apply effects
+  glassEffect.style.backdropFilter = `blur(${blurAmount}px)`;
+  initPoints(numPoints);
+
+  // Refresh slider UI gradient fill
+  document.querySelectorAll('input[type="range"]').forEach(slider => {
+    const value = ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
+    slider.style.setProperty('--value', `${value}%`);
+  });
+});
+
+// ========== Color Adjustment Sliders ==========
+const hueSlider = document.getElementById("hueSlider");
+const brightnessSlider = document.getElementById("brightnessSlider");
+const saturationSlider = document.getElementById("saturationSlider");
+const resetPaletteSlidersBtn = document.getElementById("resetPaletteSlidersBtn");
+
+function applyAdjustments() {
+  const hue = parseInt(hueSlider.value);
+  const brightness = parseInt(brightnessSlider.value);
+  const saturation = parseInt(saturationSlider.value);
+
+  colors = defaultSettings.colors.map(hex => {
+    let { r, g, b } = hexToRgb(hex);
+
+    // Convert to HSL
+    let [h, s, l] = rgbToHsl(r, g, b);
+
+    // Apply adjustments
+    h = (h * 360 + hue + 360) % 360 / 360;
+    s = clamp(s + saturation / 100, 0, 1);
+    l = clamp(l + brightness / 100, 0, 1);
+
+    // Convert back to RGB
+    const [nr, ng, nb] = hslToRgb(h, s, l);
+    return `#${componentToHex(nr)}${componentToHex(ng)}${componentToHex(nb)}`;
+  });
+
+  updateColorUI();
+}
+
+// ========== Utility Functions for Color Adjustment ==========
+function clamp(val, min, max) {
+  return Math.min(Math.max(val, min), max);
+}
+
+function rgbToHsl(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h, s, l = (max + min) / 2;
+
+  if (max === min) {
+    h = s = 0; // achromatic
+  } else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = ((g - b) / d + (g < b ? 6 : 0)); break;
+      case g: h = ((b - r) / d + 2); break;
+      case b: h = ((r - g) / d + 4); break;
     }
-    return { h, s, l };
+    h /= 6;
   }
 
-  function HSLToHex({ h, s, l }) {
-    const c = (1 - Math.abs(2 * l - 1)) * s;
-    const x = c * (1 - Math.abs((h / 60) % 2 - 1));
-    const m = l - c / 2;
-    let r = 0, g = 0, b = 0;
+  return [h, s, l];
+}
 
-    if (h < 60)      [r, g, b] = [c, x, 0];
-    else if (h < 120)[r, g, b] = [x, c, 0];
-    else if (h < 180)[r, g, b] = [0, c, x];
-    else if (h < 240)[r, g, b] = [0, x, c];
-    else if (h < 300)[r, g, b] = [x, 0, c];
-    else             [r, g, b] = [c, 0, x];
-
-    const toHex = (v) => Math.round((v + m) * 255).toString(16).padStart(2, '0');
-    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+function hslToRgb(h, s, l) {
+  let r, g, b;
+  function hue2rgb(p, q, t) {
+    if (t < 0) t += 1;
+    if (t > 1) t -= 1;
+    if (t < 1/6) return p + (q - p) * 6 * t;
+    if (t < 1/2) return q;
+    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+    return p;
   }
+  if (s === 0) {
+    r = g = b = l; // achromatic
+  } else {
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    r = hue2rgb(p, q, h + 1/3);
+    g = hue2rgb(p, q, h);
+    b = hue2rgb(p, q, h - 1/3);
+  }
+  return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+}
 
-  colors = colors.map(hex => {
-    const hsl = hexToHSL(hex);
-    hsl.h = (hsl.h + 30) % 360;
-    return HSLToHex(hsl);
-  });
+function componentToHex(c) {
+  const hex = c.toString(16);
+  return hex.length === 1 ? '0' + hex : hex;
+}
 
-  updateColorUI();
+// ========== Event Listeners for Sliders ==========
+[hueSlider, brightnessSlider, saturationSlider].forEach(slider => {
+  slider.addEventListener("input", applyAdjustments);
 });
 
-document.getElementById("lightDarkButton").addEventListener("click", () => {
-  const isNowDark = document.body.classList.toggle("gradient-dark-mode");
-  colors = colors.map(hex => {
-    const { r, g, b } = hexToRgb(hex);
-    const adjust = (v) => {
-      const amount = 30;
-      return isNowDark
-        ? Math.max(0, v - amount)
-        : Math.min(255, v + amount);
-    };
-    const toHex = (v) => adjust(v).toString(16).padStart(2, '0');
-    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-  });
+resetPaletteSlidersBtn.addEventListener("click", () => {
+  // Reset values
+  hueSlider.value = 0;
+  brightnessSlider.value = 0;
+  saturationSlider.value = 0;
+
+  // Reset colors
+  colors = [...defaultSettings.colors];
   updateColorUI();
+
+  // Update slider fill gradients
+  [hueSlider, brightnessSlider, saturationSlider].forEach(slider => {
+    const value = ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
+    slider.style.setProperty('--value', `${value}%`);
+  });
 });
+
 
 // ========== Toggle Panel Button ==========
 const toggleBtn = document.getElementById("togglePanelBtn");
@@ -275,6 +346,16 @@ document.querySelectorAll('input[type="range"]').forEach(slider => {
   };
   slider.addEventListener('input', updateGradient);
   updateGradient(); // initialize
+});
+
+// ========== Collapse/Expand Panel Logic ==========
+document.querySelectorAll(".collapseBtn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const panel = btn.closest(".mini-panel");
+    const isCollapsed = panel.classList.toggle("collapsed");
+
+    btn.textContent = isCollapsed ? "+" : "−";
+  });
 });
 
 // ========== Init ==========
