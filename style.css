@@ -254,20 +254,20 @@ body.gradient-dark-mode #lightDarkButton {
     width: 100%;
   }
 }
-/* 1. Hide cursor globally */
+/* === CURSOR VISIBILITY CONTROL === */
+
+/* 1. Hide the cursor globally */
 body,
 canvas,
 #glassEffect {
   cursor: none !important;
 }
 
-/* 2. Show cursor (arrow) ONLY over UI */
+/* 2. Show default arrow cursor over UI elements */
 #togglePanelContainer,
 #togglePanelContainer *,
 #panelContainer,
 #panelContainer *,
-.mini-panel,
-.mini-panel *,
 button,
 input,
 label {
