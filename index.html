@@ -88,6 +88,16 @@
       </div>
       <button id="resetDefaultsBtn">Reset Sliders</button>
     </div>
+    <!-- Embed Generator UI -->
+<div id="embedExportPanel" class="mini-panel">
+  <h3>Export Embed Code</h3>
+  <label><input type="checkbox" id="minifyCheckbox" /> Minify</label>
+  <button id="copyShareURLBtn">Copy Shareable URL</button>
+  <button onclick="generateEmbedCode()">Generate Embed</button>
+  <textarea id="embedOutput" readonly style="width:100%;height:250px;margin-top:10px;"></textarea>
+  <button id="copyEmbedBtn">Copy to Clipboard</button>
+</div>
+
   </div>
 
   <!-- Main Script -->
