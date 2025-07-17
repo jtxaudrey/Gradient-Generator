@@ -23,7 +23,13 @@ let shadowBlur = defaultSettings.shadow;
 let numPoints = defaultSettings.count;
 let smoothnessFactor = defaultSettings.smoothness;
 let speedFactor = defaultSettings.speed;
+
 let colors = [...defaultSettings.colors];
+let baseHSLPalette = colors.map(hex => {
+  const { r, g, b } = hexToRgb(hex);
+  const [h, s, l] = rgbToHsl(r, g, b);
+  return { h, s, l };
+});
 
 let colorProgress = new Array(numPoints).fill(0.5);
 let points = [];
@@ -159,15 +165,19 @@ const colorPaletteList = document.getElementById("colorPaletteList");
 blurSlider.addEventListener("input", () => {
   blurAmount = parseInt(blurSlider.value);
   glassEffect.style.backdropFilter = `blur(${blurAmount}px)`;
+  updateShareableURLBox();
 });
 radiusSlider.addEventListener("input", () => {
   circleRadius = parseInt(radiusSlider.value);
+  updateShareableURLBox();
 });
 shadowSlider.addEventListener("input", () => {
   shadowBlur = parseInt(shadowSlider.value);
+  updateShareableURLBox();
 });
 smoothnessSlider.addEventListener("input", () => {
   smoothnessFactor = parseFloat(smoothnessSlider.value);
+  updateShareableURLBox();
 });
 speedSlider.addEventListener("input", () => {
   speedFactor = parseFloat(speedSlider.value);
@@ -175,11 +185,13 @@ speedSlider.addEventListener("input", () => {
     p.dx = (Math.random() - 0.5) * speedFactor;
     p.dy = (Math.random() - 0.5) * speedFactor;
   });
+  updateShareableURLBox();
 });
 circleCountSlider.addEventListener("input", () => {
   numPoints = parseInt(circleCountSlider.value);
   circleCountValue.textContent = numPoints;
   initPoints(numPoints);
+  updateShareableURLBox();
 });
 
 // ========== Palette UI ==========
@@ -199,6 +211,7 @@ function updateColorUI() {
       colors[i] = e.target.value;
       label.textContent = e.target.value;
       if (i === 0) document.body.style.backgroundColor = e.target.value;
+      updateShareableURLBox();
     });
 
     li.appendChild(label);
@@ -214,6 +227,7 @@ document.getElementById("changeColorButton").addEventListener("click", () => {
       `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`)
   );
   updateColorUI();
+  updateShareableURLBox();
 });
 
 // ========== Reset Visual Sliders ==========
@@ -243,6 +257,7 @@ document.getElementById("resetDefaultsBtn").addEventListener("click", () => {
     const value = ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
     slider.style.setProperty('--value', `${value}%`);
   });
+  updateShareableURLBox();
 });
 
 // ========== Color Adjustment Sliders ==========
@@ -252,28 +267,20 @@ const saturationSlider = document.getElementById("saturationSlider");
 const resetPaletteSlidersBtn = document.getElementById("resetPaletteSlidersBtn");
 
 function applyAdjustments() {
-  const hue = parseInt(hueSlider.value);
-  const brightness = parseInt(brightnessSlider.value);
-  const saturation = parseInt(saturationSlider.value);
+  const hueShift = parseInt(hueSlider.value);
+  const brightnessShift = parseInt(brightnessSlider.value);
+  const saturationShift = parseInt(saturationSlider.value);
 
-const baseColors = [...colors];
-colors = baseColors.map(hex => {
-    let { r, g, b } = hexToRgb(hex);
-
-    // Convert to HSL
-    let [h, s, l] = rgbToHsl(r, g, b);
-
-    // Apply adjustments
-    h = (h * 360 + hue + 360) % 360 / 360;
-    s = clamp(s + saturation / 100, 0, 1);
-    l = clamp(l + brightness / 100, 0, 1);
-
-    // Convert back to RGB
-    const [nr, ng, nb] = hslToRgb(h, s, l);
-    return `#${componentToHex(nr)}${componentToHex(ng)}${componentToHex(nb)}`;
+  colors = baseHSLPalette.map(({ h, s, l }) => {
+    let newH = (h * 360 + hueShift + 360) % 360 / 360;
+    let newS = clamp(s + saturationShift / 100, 0, 1);
+    let newL = clamp(l + brightnessShift / 100, 0, 1);
+    const [r, g, b] = hslToRgb(newH, newS, newL);
+    return `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}`;
   });
 
   updateColorUI();
+  updateShareableURLBox();
 }
 
 // ========== Utility Functions for Color Adjustment ==========
@@ -565,9 +572,14 @@ function getSharableURL() {
   params.set("colors", colors.map(c => c.replace('#', '')).join(','));
   return `${window.location.origin}${window.location.pathname}?${params.toString()}`;
 }
+function updateShareableURLBox() {
+  document.getElementById("shareableURL").value = getSharableURL();
+}
 
 document.getElementById("copyShareURLBtn").addEventListener("click", () => {
   const url = getSharableURL();
+  document.getElementById("shareableURL").value = url;
+
   navigator.clipboard.writeText(url).then(() => {
     alert("Shareable URL copied to clipboard!");
   }).catch(err => {
@@ -575,6 +587,9 @@ document.getElementById("copyShareURLBtn").addEventListener("click", () => {
     alert("Failed to copy. Try manually.");
   });
 });
+document.getElementById("shareableURL").value = getSharableURL();
+updateShareableURLBox();
+
 // ========== Init ==========
 glassEffect.style.backdropFilter = `blur(${blurAmount}px)`;
 updateColorUI();

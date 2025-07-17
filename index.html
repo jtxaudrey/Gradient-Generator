@@ -91,7 +91,8 @@
     <!-- Embed Generator UI -->
 <div id="embedExportPanel" class="mini-panel">
   <h3>Export Embed Code</h3>
-  <label><input type="checkbox" id="minifyCheckbox" /> Minify</label>
+    <textarea id="shareableURL" readonly></textarea>
+ 
   <button id="copyShareURLBtn">Copy Shareable URL</button>
   <button onclick="generateEmbedCode()">Generate Embed</button>
   <textarea id="embedOutput" readonly style="width:100%;height:250px;margin-top:10px;"></textarea>
