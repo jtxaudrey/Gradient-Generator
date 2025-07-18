@@ -8,17 +8,18 @@ const glassEffect = document.getElementById("glassEffect");
 
 
 const defaultSettings = {
-  blur: 90,
-  radius: 100,
+  blur: 124,
+  radius: 110,
   shadow: 4,
-  count: 120,
-  smoothness: 6.6,
-  speed: 1.7,
+  count: 150,
+  smoothness: 6.4,
+  speed: 1.6,
   colors: ['#fffd8c', '#97fff4', '#ff6b6b', '#7091f5', '#d6a3ff', '#bae9bd', '#535ef9']
 };
 
 let blurAmount = defaultSettings.blur;
-let circleRadius = defaultSettings.radius;
+let baseRadiusFactor = 0.05; // 5% of screen width
+let circleRadius = canvas.width * baseRadiusFactor;
 let shadowBlur = defaultSettings.shadow;
 let numPoints = defaultSettings.count;
 let smoothnessFactor = defaultSettings.smoothness;
@@ -271,18 +272,21 @@ function applyAdjustments() {
   const brightnessShift = parseInt(brightnessSlider.value);
   const saturationShift = parseInt(saturationSlider.value);
 
-  colors = baseHSLPalette.map(({ h, s, l }) => {
-    let newH = (h * 360 + hueShift + 360) % 360 / 360;
-    let newS = clamp(s + saturationShift / 100, 0, 1);
-    let newL = clamp(l + brightnessShift / 100, 0, 1);
-    const [r, g, b] = hslToRgb(newH, newS, newL);
-    return `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}`;
+  colors = colors.map(hex => {
+    const { r, g, b } = hexToRgb(hex);
+    let [h, s, l] = rgbToHsl(r, g, b);
+
+    h = (h * 360 + hueShift + 360) % 360 / 360;
+    s = clamp(s + saturationShift / 100, 0, 1);
+    l = clamp(l + brightnessShift / 100, 0, 1);
+
+    const [r2, g2, b2] = hslToRgb(h, s, l);
+    return `#${componentToHex(r2)}${componentToHex(g2)}${componentToHex(b2)}`;
   });
 
   updateColorUI();
   updateShareableURLBox();
 }
-
 // ========== Utility Functions for Color Adjustment ==========
 function clamp(val, min, max) {
   return Math.min(Math.max(val, min), max);
@@ -342,16 +346,15 @@ function componentToHex(c) {
 });
 
 resetPaletteSlidersBtn.addEventListener("click", () => {
-  // Reset values
   hueSlider.value = 0;
   brightnessSlider.value = 0;
   saturationSlider.value = 0;
 
-  // Reset colors
   colors = [...defaultSettings.colors];
   updateColorUI();
+  updateShareableURLBox();
 
-  // Update slider fill gradients
+  // Reset slider fill gradients
   [hueSlider, brightnessSlider, saturationSlider].forEach(slider => {
     const value = ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
     slider.style.setProperty('--value', `${value}%`);
