@@ -8,12 +8,12 @@ const glassEffect = document.getElementById("glassEffect");
 
 
 const defaultSettings = {
-  blur: 124,
+  blur: 140,
   radius: 110,
   shadow: 4,
   count: 150,
-  smoothness: 6.4,
-  speed: 1.6,
+  smoothness: 6.2,
+  speed: 1.8,
   colors: ['#fffd8c', '#97fff4', '#ff6b6b', '#7091f5', '#d6a3ff', '#bae9bd', '#535ef9']
 };
 
