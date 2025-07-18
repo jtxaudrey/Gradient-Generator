@@ -593,6 +593,13 @@ document.getElementById("copyShareURLBtn").addEventListener("click", () => {
 document.getElementById("shareableURL").value = getSharableURL();
 updateShareableURLBox();
 
+// ========== Auto-Hide Panels if in View-Only Mode ==========
+const params = new URLSearchParams(window.location.search);
+if (params.get("viewOnly") === "true") {
+  document.body.classList.add("panels-hidden"); // Optional styling hook
+  panelContainer.style.display = "none";        // Hide the main panel
+  toggleBtn.style.display = "none";             // Hide the toggle button
+}
 // ========== Init ==========
 glassEffect.style.backdropFilter = `blur(${blurAmount}px)`;
 updateColorUI();
