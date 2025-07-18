@@ -289,7 +289,7 @@ body.gradient-dark-mode #lightDarkButton {
 /* === CURSOR VISIBILITY CONTROL === */
 
 /* 1. Hide the cursor globally */
-body,
+/* body,
 canvas,
 #glassEffect {
   cursor: none !important;
