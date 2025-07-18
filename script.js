@@ -566,6 +566,7 @@ document.getElementById("copyEmbedBtn").addEventListener("click", () => {
 
 function getSharableURL() {
   const params = new URLSearchParams();
+  params.set("viewOnly", "true"); // ✨ Add this line to force clean view
   params.set("blur", blurAmount);
   params.set("radius", circleRadius);
   params.set("shadow", shadowBlur);
