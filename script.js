@@ -106,7 +106,8 @@ function adjustHexAdobe(hex, hueShiftDeg, satShiftPct, lightShiftPct) {
 
   const hueShift = hueShiftDeg / 360; // degrees -> turns
   h = (h + hueShift) % 1; if (h < 0) h += 1;
-  s = clamp(s + (satShiftPct / 100), 0, 1);
+const sFactor = 1 + (satShiftPct / 100);   // -100..+100 → 0..2
+s = clamp(s * sFactor, 0, 1);
   l = clamp(l + (lightShiftPct / 100), 0, 1);
 
   const [r2, g2, b2] = hslToRgb(h, s, l);
@@ -120,7 +121,8 @@ function inverseAdjustHexAdobe(adjustedHex, hueShiftDeg, satShiftPct, lightShift
 
   const hueShift = hueShiftDeg / 360;
   h = (h - hueShift) % 1; if (h < 0) h += 1;
-  s = clamp(s - (satShiftPct / 100), 0, 1);
+ const sFactor = 1 + (satShiftPct / 100);
+s = sFactor !== 0 ? clamp(s / sFactor, 0, 1) : 0;
   l = clamp(l - (lightShiftPct / 100), 0, 1);
 
   const [r2, g2, b2] = hslToRgb(h, s, l);
