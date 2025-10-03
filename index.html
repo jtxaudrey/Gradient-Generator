@@ -90,14 +90,23 @@
     </div>
     <!-- Embed Generator UI -->
 <div id="embedExportPanel" class="mini-panel">
+  <div class="panelHeader">
   <h3>Export Embed Code</h3>
+  <button class="collapseBtn">−</button>
+</div>
+  
     <textarea id="shareableURL" readonly></textarea>
  
   <button id="copyShareURLBtn">Copy Shareable URL</button>
-  <button onclick="generateEmbedCode()">Generate Embed</button>
+  <button onclick="generateEmbedCode()">Generate Embed Code</button>
   <textarea id="embedOutput" readonly style="width:100%;height:250px;margin-top:10px;"></textarea>
   <button id="copyEmbedBtn">Copy to Clipboard</button>
 </div>
+<div class="mini-panel">
+<button onclick="window.open('https://audreyji.com', '_blank', 'noopener')">
+  Designed by Audrey
+</button>
+
 
   </div>
 

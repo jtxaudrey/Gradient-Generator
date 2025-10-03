@@ -75,7 +75,7 @@ body.panels-hidden #togglePanelContainer:not(:hover) #togglePanelBtn {
 }
 
 #togglePanelBtn:hover {
-  background-color: #dcff67;
+  background-color: #dcff679d;
   color: black;
 }
 

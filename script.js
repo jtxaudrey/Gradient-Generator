@@ -289,6 +289,46 @@ function resetAdjustmentSlidersToCenter() {
   });
 }
 
+// Match these to your desired defaults (using your HTML values here)
+const STYLE_DEFAULTS = {
+  blur: 140,
+  radius: 110,
+  shadow: 4,
+  smoothness: 6.2,
+  speed: 1.8,
+  count: 150,
+};
+
+function setInputValueById(id, value) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.value = String(value);
+  // Trigger any existing listeners that update the canvas/URL
+  el.dispatchEvent(new Event('input', { bubbles: true }));
+  el.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+function resetStyleSliders() {
+  setInputValueById('blurSlider', STYLE_DEFAULTS.blur);
+  setInputValueById('radiusSlider', STYLE_DEFAULTS.radius);
+  setInputValueById('shadowSlider', STYLE_DEFAULTS.shadow);
+  setInputValueById('smoothnessSlider', STYLE_DEFAULTS.smoothness);
+  setInputValueById('speedSlider', STYLE_DEFAULTS.speed);
+  setInputValueById('circleCountSlider', STYLE_DEFAULTS.count);
+
+  // Update the live count label if you show it
+  const countLabel = document.getElementById('circleCountValue');
+  if (countLabel) countLabel.textContent = String(STYLE_DEFAULTS.count);
+
+  // If you have a single recompute/render function, call it here too:
+  // updateFromControls();  // <-- optional if your listeners already handle it
+}
+
+// Ensure the button is wired after DOM exists
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('resetDefaultsBtn');
+  if (btn) btn.addEventListener('click', resetStyleSliders);
+});
 // Generate New Palette: reset sliders to center, randomize BASE, re-derive adjusted
 document.getElementById("changeColorButton").addEventListener("click", () => {
   resetAdjustmentSlidersToCenter();
@@ -325,6 +365,47 @@ document.querySelectorAll(".collapseBtn").forEach(btn => {
     const panel = btn.closest(".mini-panel");
     const isCollapsed = panel.classList.toggle("collapsed");
     btn.textContent = isCollapsed ? "+" : "−";
+  });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const panel = document.getElementById('panelContainer');
+  const btn   = document.getElementById('togglePanelBtn');
+  if (!panel || !btn) return;
+
+  function setControlsHidden(hidden, { persist = true } = {}) {
+    panel.classList.toggle('hidden', hidden);
+    document.body.classList.toggle('panels-hidden', hidden);
+    btn.textContent = hidden ? '☰ Show Controls' : '☰ Hide Controls';
+    btn.setAttribute('aria-pressed', String(hidden));
+
+    if (persist) {
+      const url = new URL(location.href);
+      if (hidden) url.searchParams.set('viewOnly', 'true');
+      else url.searchParams.delete('viewOnly');
+      history.replaceState(null, '', url);
+      localStorage.setItem('viewOnly', hidden ? '1' : '0');
+    }
+  }
+
+  // Click to toggle
+  btn.addEventListener('click', () => {
+    setControlsHidden(!panel.classList.contains('hidden'));
+  });
+
+  // Init from URL or localStorage
+  const fromURL = new URLSearchParams(location.search).get('viewOnly') === 'true';
+  const fromLS  = localStorage.getItem('viewOnly') === '1';
+  setControlsHidden(fromURL || fromLS, { persist: false });
+
+  // Optional: keyboard support
+  btn.setAttribute('role', 'button');
+  btn.setAttribute('tabindex', '0');
+  btn.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      btn.click();
+    }
   });
 });
 
